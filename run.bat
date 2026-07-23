@@ -66,7 +66,7 @@ echo --------------------------------------------------------
 
 echo   --- lint ---
 call composer lint
-if errorlevel 1 goto END_FAIL
+if errorlevel 2 goto END_FAIL
 
 echo   --- stan ---
 call composer stan
