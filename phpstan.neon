@@ -1,0 +1,11 @@
+parameters:
+    level: 6
+    paths:
+        - src/
+        - openpoly.php
+    excludePaths:
+        - src/DB/Migrations/legacy/*
+    bootstrapFiles:
+        - vendor/szepeviktor/phpstan-wordpress/bootstrap.php
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon

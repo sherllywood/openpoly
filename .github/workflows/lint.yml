@@ -1,0 +1,23 @@
+name: lint
+on:
+  push:
+    branches: [main, release/**]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: Install composer dev deps
+        run: composer install --no-progress --prefer-dist
+      - name: PHPCS (WordPress-Core/Docs/Extra)
+        run: composer lint
+      - name: PHPStan level 6
+        run: composer stan
+      - name: PHPCompatibility 7.4-8.3
+        run: composer compat
