@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
 final class TranslationServiceProvider extends ServiceProvider {
 
 	/**
-	 * Bind the repository factory.
+	 * Bind factories.
 	 *
 	 * @return void
 	 */
@@ -50,15 +50,25 @@ final class TranslationServiceProvider extends ServiceProvider {
 				return new ContentTranslator();
 			}
 		);
+
+		$this->container->set(
+			TranslationSync::class,
+			static function ( Container $c ): TranslationSync {
+				return new TranslationSync(
+					$c->get( Repository::class ),
+					$c->get( StatusRepository::class )
+				);
+			}
+		);
 	}
 
 	/**
-	 * M-05 has no hooks to register yet.
+	 * Register the save_post hook from TranslationSync.
 	 *
-	 * @param HookRegistrar $registrar Hook registrar (unused in M-05).
+	 * @param HookRegistrar $registrar Hook registrar shared by all providers.
 	 * @return void
 	 */
 	public function boot( HookRegistrar $registrar ): void {
-		// No-op in M-05.
+		$registrar->register( $this->container->get( TranslationSync::class ) );
 	}
 }
