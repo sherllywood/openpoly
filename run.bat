@@ -114,7 +114,7 @@ if not exist .git (
 )
 git add .
 git commit -m "chore: M-01 bootstrap skeleton + wp-env + CI"
-if errorlevel 1 goto END_FAIL
+REM git commit returns 1 when there is nothing to commit, which is fine on re-runs.
 
 echo.
 
