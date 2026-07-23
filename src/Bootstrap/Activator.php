@@ -15,6 +15,7 @@ namespace OpenPoly\Bootstrap;
 
 use OpenPoly\DB\Database;
 use OpenPoly\Language\LanguageServiceProvider;
+use OpenPoly\Query\QueryServiceProvider;
 use OpenPoly\Translation\TranslationServiceProvider;
 use OpenPoly\Url\UrlServiceProvider;
 
@@ -108,6 +109,7 @@ final class Activator {
 			LanguageServiceProvider::class,
 			TranslationServiceProvider::class,
 			UrlServiceProvider::class,
+			QueryServiceProvider::class,
 		);
 	}
 }
