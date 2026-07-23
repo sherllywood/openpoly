@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace OpenPoly\Bootstrap;
 
 use OpenPoly\DB\Database;
+use OpenPoly\Language\LanguageServiceProvider;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -102,7 +103,7 @@ final class Activator {
 	 */
 	private static function providers(): array {
 		return array(
-			// Add providers here as modules come online.
+			LanguageServiceProvider::class,
 		);
 	}
 }
