@@ -25,6 +25,14 @@
   <rule ref="WordPress.Security.EscapeOutput">
     <severity>0</severity>
   </rule>
+  <!-- Squiz.PHP.Heredoc.NotAllowed flags any heredoc. Our CREATE TABLE
+       statements use heredoc because the SQL is multi-line and contains
+       a {prefix} placeholder that Database::install() substitutes at
+       runtime. The sniff cannot see the placeholder, so the warning is
+       a false positive. -->
+  <rule ref="Squiz.PHP.Heredoc">
+    <severity>0</severity>
+  </rule>
   <config name="minimum_supported_version" value="6.0"/>
 </ruleset>
 

@@ -4,7 +4,7 @@
  *
  * - M-01: registers schema version option, no DB writes yet.
  * - M-02: wires up DI container + service providers + hook registrar.
- * - M-03: will run dbDelta for the first three tables.
+ * - M-03: runs dbDelta to install the first three tables.
  *
  * @package OpenPoly
  */
@@ -12,6 +12,8 @@
 declare(strict_types=1);
 
 namespace OpenPoly\Bootstrap;
+
+use OpenPoly\DB\Database;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,8 +23,6 @@ defined( 'ABSPATH' ) || exit;
  * @since 0.5.0-dev
  */
 final class Activator {
-
-	public const SCHEMA_VERSION = 0;
 
 	/**
 	 * Container singleton instance.
@@ -37,13 +37,15 @@ final class Activator {
 	/**
 	 * Run on plugin activation.
 	 *
+	 * Creates the three core tables and records the schema version.
+	 * Idempotent: a re-activation re-runs dbDelta, which is a no-op
+	 * when the schema already matches.
+	 *
 	 * @since 0.5.0-dev
 	 * @return void
 	 */
 	public static function on_activation(): void {
-		if ( false === get_option( 'openpoly_schema_version' ) ) {
-			add_option( 'openpoly_schema_version', self::SCHEMA_VERSION );
-		}
+		Database::install();
 	}
 
 	/**
@@ -100,7 +102,7 @@ final class Activator {
 	 */
 	private static function providers(): array {
 		return array(
-			// Add providers here in M-03+ as modules come online.
+			// Add providers here as modules come online.
 		);
 	}
 }
