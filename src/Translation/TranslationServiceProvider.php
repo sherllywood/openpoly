@@ -36,6 +36,20 @@ final class TranslationServiceProvider extends ServiceProvider {
 				return new Repository();
 			}
 		);
+
+		$this->container->set(
+			StatusRepository::class,
+			static function (): StatusRepository {
+				return new StatusRepository();
+			}
+		);
+
+		$this->container->set(
+			ContentTranslator::class,
+			static function (): ContentTranslator {
+				return new ContentTranslator();
+			}
+		);
 	}
 
 	/**
