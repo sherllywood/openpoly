@@ -121,7 +121,7 @@ final class QueryFilter {
 	/**
 	 * Pre get posts hook: mark the query for filtering.
 	 *
-	 * @param WP_Query $query
+	 * @param WP_Query $query The query being inspected.
 	 * @return void
 	 */
 	public function maybe_apply_to_query( WP_Query $query ): void {
