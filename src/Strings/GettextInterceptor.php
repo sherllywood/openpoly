@@ -34,24 +34,32 @@ final class GettextInterceptor {
 	private array $cache = array();
 
 	/**
+	 * String repository for loading translations.
+	 *
 	 * @var StringRepository
 	 */
 	private StringRepository $repository;
 
 	/**
+	 * Language manager for current locale.
+	 *
 	 * @var LanguageManager
 	 */
 	private LanguageManager $languages;
 
 	/**
+	 * URL router for current language detection.
+	 *
 	 * @var UrlRouter
 	 */
 	private UrlRouter $router;
 
 	/**
-	 * @param StringRepository $repository
-	 * @param LanguageManager  $languages
-	 * @param UrlRouter        $router
+	 * Constructor.
+	 *
+	 * @param StringRepository $repository String repository.
+	 * @param LanguageManager  $languages  Language manager.
+	 * @param UrlRouter        $router     URL router.
 	 */
 	public function __construct( StringRepository $repository, LanguageManager $languages, UrlRouter $router ) {
 		$this->repository = $repository;
@@ -87,8 +95,8 @@ final class GettextInterceptor {
 
 		// Pre-fetch 'default' domain (the theme / plugin domain
 		// is resolved dynamically in translate()).
-		$key                  = 'default|' . $lang;
-		$this->cache[ $key ]  = $this->repository->load_translations( 'default', $lang );
+		$key                 = 'default|' . $lang;
+		$this->cache[ $key ] = $this->repository->load_translations( 'default', $lang );
 	}
 
 	/**
@@ -105,8 +113,8 @@ final class GettextInterceptor {
 			return $translation;
 		}
 
-		$domain_key  = (string) $domain;
-		$cache_key   = $domain_key . '|' . $lang;
+		$domain_key = (string) $domain;
+		$cache_key  = $domain_key . '|' . $lang;
 
 		if ( ! isset( $this->cache[ $cache_key ] ) ) {
 			$this->cache[ $cache_key ] = $this->repository->load_translations( $domain_key, $lang );

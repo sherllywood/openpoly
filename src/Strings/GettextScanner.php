@@ -59,6 +59,7 @@ final class GettextScanner {
 			return array();
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local file scan, not remote.
 		$content = file_get_contents( $file_path );
 		if ( false === $content ) {
 			return array();

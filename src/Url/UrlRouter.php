@@ -126,7 +126,7 @@ final class UrlRouter {
 		// Parameter mode: ?lang= overrides.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only language negotiation; nonce not applicable.
 		if ( null === $lang && isset( $_GET[ self::LANG_QUERY_VAR ] ) ) {
-			$candidate = sanitize_key( wp_unslash( (string) $_GET[ self::LANG_QUERY_VAR ] ) );
+			$candidate = sanitize_key( wp_unslash( (string) $_GET[ self::LANG_QUERY_VAR ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only language negotiation.
 			if ( $this->is_known_language( $candidate ) ) {
 				$lang = $candidate;
 			}

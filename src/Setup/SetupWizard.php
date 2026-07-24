@@ -101,6 +101,8 @@ final class SetupWizard {
 		if ( '1' === (string) get_option( self::SKIPPED_OPTION, '0' ) ) {
 			return;
 		}
+		// Only redirect on a normal admin request, not on the wizard
+		// page itself (which would loop).
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only admin page check.
 		$page = isset( $_GET['page'] ) ? (string) wp_unslash( $_GET['page'] ) : '';
 		if ( 'openpoly-setup' === $page ) {

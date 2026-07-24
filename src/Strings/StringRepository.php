@@ -21,14 +21,14 @@ final class StringRepository {
 	/**
 	 * Unprefixed table names.
 	 */
-	private const TABLE_STRINGS       = 'op_strings';
-	private const TABLE_TRANSLATIONS  = 'op_string_translations';
-	private const TABLE_POSITIONS     = 'op_string_positions';
+	private const TABLE_STRINGS      = 'op_strings';
+	private const TABLE_TRANSLATIONS = 'op_string_translations';
+	private const TABLE_POSITIONS    = 'op_string_positions';
 
 	/**
 	 * Insert a string if it does not already exist.
 	 *
-	 * @param array{text:string, context:string, domain:string, plural:string, fn:string} $entry
+	 * @param array{text:string, context:string, domain:string, plural:string, fn:string} $entry Entry with text, context, domain, plural, fn keys.
 	 * @return int String id.
 	 */
 	public function upsert( array $entry ): int {
@@ -70,9 +70,9 @@ final class StringRepository {
 	/**
 	 * Record where a string was found (source file location).
 	 *
-	 * @param int    $string_id
-	 * @param string $position  e.g. "path/to/file.php:42"
-	 * @param int    $kind      1=PHP source
+	 * @param int    $string_id String ID.
+	 * @param string $position  Position, e.g. "path/to/file.php:42".
+	 * @param int    $kind      Kind: 1 = PHP source.
 	 * @return void
 	 */
 	public function add_position( int $string_id, string $position, int $kind = 1 ): void {
@@ -94,8 +94,8 @@ final class StringRepository {
 	 *
 	 * Used by GettextInterceptor to pre-fetch the entire set.
 	 *
-	 * @param string $domain
-	 * @param string $language
+	 * @param string $domain   Text domain.
+	 * @param string $language Language code.
 	 * @return array<string, string> Map of md5 => translation.
 	 */
 	public function load_translations( string $domain, string $language ): array {
