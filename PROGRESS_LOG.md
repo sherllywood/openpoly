@@ -1,6 +1,6 @@
 # OpenPoly · 开发日志
 
-> 2026-07-24 起 / M-01 ~ M-10 / 109 个单测全过 / main @ `9a415c8`
+> 2026-07-24 起 / MVP 17/17 ✅ / v1.0 A-01 已落地 / main @ `d2f8c3b`
 >
 > 这份日志记录**会话来不及沉淀到 docs/ 的过程性内容**。正式的设计决策在 `D:\ML-tradyfox\docs\`。
 
@@ -184,19 +184,13 @@ composer dump-autoload
 
 ## 6. 下次开工清单
 
-1. **MVP 段 100% 完成** ✅（17/17 任务, 53/53 人日）—— main 现在 `883f13b`
-2. **Docker 已装好** ✅（29.6.2, `hello-world` 跑通）
-3. **集成测试** ✅ `tests/integration/` + `tests/performance/benchmark.php` 已落地
-4. **M-17 待解决**：
-   - WordPress 容器 `localhost:8888` 的向导"Next"按钮无响应
-   - 绕过方案：访问 `http://localhost:8888/wp-admin/?openpoly_setup_done=1` 跳过向导
-   - 或手动重启容器：`docker restart wp`
+1. **MVP 段 100% 完成** ✅（17/17 任务, 53/53 人日）
+2. **v1.0 A-01 字符串翻译扫描** ✅ 已落地（`d2f8c3b`）—— GettextScanner + StringRepository + GettextInterceptor + 9 tests
+3. **仓库干净**，无 pending 改动
 
-5. **下一阶段：v1.0 里程碑**
-   - A-01 字符串翻译扫描（6 人日）
-   - A-02 分句段 + ATE 编辑器（30 人日）
-   - A-03 引擎接入（4 人日）
-   - A-04 TM 精确匹配（3 人日）
-   - A-05 翻译仪表盘（6 人日）
-   - ...共计 17 个任务，~80 人日
+4. **下一步：v1.0 A-02 分句段 + ATE 编辑器（30 人日）**
+   - 先在 Windows 宿主机跑通质量门禁：`.\run.bat`
+   - 然后进入 A-02：段落分句 → XLIFF round-trip → ATE 编辑器 UI
+
+5. 后续任务顺排：A-03 引擎接入 → A-04 TM 精确匹配 → A-05 翻译仪表盘 → ...共 16 个任务，~74 人日
 
