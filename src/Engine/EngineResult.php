@@ -42,9 +42,9 @@ final class EngineResult {
 	/**
 	 * Constructor.
 	 *
-	 * @param array<int, string>                                                          $translations Segment translations.
-	 * @param array{chars_billed:int, tokens_in:int, tokens_out:int, tokens_cached:int}   $usage        Usage info.
-	 * @param bool                                                                        $is_cached    Whether cached.
+	 * @param array<int, string>                                                        $translations Segment translations.
+	 * @param array{chars_billed:int, tokens_in:int, tokens_out:int, tokens_cached:int} $usage        Usage info.
+	 * @param bool                                                                      $is_cached    Whether cached.
 	 */
 	public function __construct( array $translations, array $usage = array(), bool $is_cached = false ) {
 		$this->translations = $translations;

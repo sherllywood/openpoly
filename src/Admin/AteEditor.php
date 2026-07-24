@@ -579,19 +579,19 @@ final class AteEditor {
 		}
 
 		// Collect untranslated segments.
-		$source_lang   = $this->get_source_language( $trid );
-		$to_translate  = array();
-		$texts         = array();
+		$source_lang  = $this->get_source_language( $trid );
+		$to_translate = array();
+		$texts        = array();
 		foreach ( $segments as $seg ) {
 			$status = (int) ( $seg['status'] ?? 0 );
 			if ( 0 === $status ) {
-				$sid             = (int) $seg['id'];
-				$source          = (string) ( $seg['source_text'] ?? '' );
-				$to_translate[]  = array(
+				$sid            = (int) $seg['id'];
+				$source         = (string) ( $seg['source_text'] ?? '' );
+				$to_translate[] = array(
 					'id'   => $sid,
 					'text' => $source,
 				);
-				$texts[ $sid ]   = $source;
+				$texts[ $sid ]  = $source;
 			}
 		}
 

@@ -70,10 +70,10 @@ final class OpenAiCompatibleEngine implements EngineGateway {
 	/**
 	 * Translate a batch of segments.
 	 *
-	 * @param string                                   $source_language Source language code.
-	 * @param string                                   $target_language Target language code.
-	 * @param array<int, array{id:int, text:string}>   $segments        Segments to translate.
-	 * @param string                                   $idempotency_key Idempotency key for safe retry.
+	 * @param string                                 $source_language Source language code.
+	 * @param string                                 $target_language Target language code.
+	 * @param array<int, array{id:int, text:string}> $segments        Segments to translate.
+	 * @param string                                 $idempotency_key Idempotency key for safe retry.
 	 * @return EngineResult
 	 * @throws EngineException On gateway error.
 	 */
@@ -161,8 +161,8 @@ final class OpenAiCompatibleEngine implements EngineGateway {
 	/**
 	 * Generate an idempotency key from token prefix + job item id + segment fingerprint.
 	 *
-	 * @param int                  $trid  Translation group id.
-	 * @param array<int, string>   $texts Source texts in order.
+	 * @param int                $trid  Translation group id.
+	 * @param array<int, string> $texts Source texts in order.
 	 * @return string
 	 */
 	public static function idempotency_key( int $trid, array $texts ): string {
