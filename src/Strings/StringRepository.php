@@ -101,7 +101,7 @@ final class StringRepository {
 	public function load_translations( string $domain, string $language ): array {
 		global $wpdb;
 
-		$rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- table names from constants, safe.
 			$wpdb->prepare(
 				'SELECT s.domain_name_context_md5, t.value
 				 FROM ' . $wpdb->prefix . self::TABLE_STRINGS . ' s

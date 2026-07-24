@@ -170,7 +170,7 @@ final class GettextInterceptor {
 	 */
 	private function is_active_language( string $code ): bool {
 		foreach ( $this->languages->active_languages() as $row ) {
-			if ( $code === (string) ( $row['code'] ?? '' ) ) {
+			if ( (string) ( $row['code'] ?? '' ) === $code ) {
 				return true;
 			}
 		}
