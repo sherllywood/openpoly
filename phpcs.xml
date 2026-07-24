@@ -33,6 +33,12 @@
   <rule ref="Squiz.PHP.Heredoc">
     <severity>0</severity>
   </rule>
+  <!-- libxml_disable_entity_loader() is deprecated in PHP 8.0 but is the most
+       portable single-call XXE guard across all supported PHP versions (7.4–8.5).
+       The PHP 8.4+ alternative requires a callback-based approach that is more
+       complex. This exclusion is intentional and documented in XliffImport. -->
+  <rule ref="PHPCompatibility.FunctionUse.RemovedFunctions.libxml_disable_entity_loaderDeprecatedRemoved">
+    <severity>0</severity>
+  </rule>
   <config name="minimum_supported_version" value="6.0"/>
 </ruleset>
-
