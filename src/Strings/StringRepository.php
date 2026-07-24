@@ -101,17 +101,19 @@ final class StringRepository {
 	public function load_translations( string $domain, string $language ): array {
 		global $wpdb;
 
-		$rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- table names from constants, safe.
-			$wpdb->prepare(
-				'SELECT s.domain_name_context_md5, t.value
-				 FROM ' . $wpdb->prefix . self::TABLE_STRINGS . ' s
-				 INNER JOIN ' . $wpdb->prefix . self::TABLE_TRANSLATIONS . ' t ON s.id = t.string_id
-				 WHERE s.domain = %s AND t.language = %s AND t.status = 10',
-				$domain,
-				$language
-			),
-			ARRAY_A
-		);
+		$table_strings      = $wpdb->prefix . self::TABLE_STRINGS;
+		$table_translations = $wpdb->prefix . self::TABLE_TRANSLATIONS;
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table_strings / $table_translations are safe constants, not user input.
+		$rows = $wpdb->get_results( $wpdb->prepare(
+			"SELECT s.domain_name_context_md5, t.value
+			 FROM {$table_strings} s
+			 INNER JOIN {$table_translations} t ON s.id = t.string_id
+			 WHERE s.domain = %s AND t.language = %s AND t.status = 10",
+			$domain,
+			$language
+		), ARRAY_A );
+		// phpcs:enable
 
 		$map = array();
 		if ( is_array( $rows ) ) {
