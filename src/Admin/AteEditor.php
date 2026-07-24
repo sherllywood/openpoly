@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace OpenPoly\Admin;
 
+use OpenPoly\Engine\EngineException;
+use OpenPoly\Engine\EngineGateway;
 use OpenPoly\Segmenter\Segmenter;
 use OpenPoly\Segmenter\SegmentRepository;
 use OpenPoly\Segmenter\XliffExport;
@@ -108,6 +110,7 @@ final class AteEditor {
 		add_action( 'admin_post_openpoly_ate_save', array( $this, 'handle_save' ) );
 		add_action( 'admin_post_openpoly_ate_export', array( $this, 'handle_export' ) );
 		add_action( 'admin_post_openpoly_ate_import', array( $this, 'handle_import' ) );
+		add_action( 'admin_post_openpoly_ate_engine', array( $this, 'handle_engine' ) );
 	}
 
 	/**
@@ -316,6 +319,14 @@ final class AteEditor {
 		echo '<p style="margin-bottom:16px;">';
 		echo '<a class="button button-primary" href="' . esc_url( $base_url . '&a=export' ) . '">'
 			. esc_html__( 'Export XLIFF', 'openpoly' ) . '</a> ';
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" style="display:inline;">';
+		wp_nonce_field( 'openpoly_ate_engine', 'openpoly_ate_engine_nonce' );
+		echo '<input type="hidden" name="action" value="openpoly_ate_engine">';
+		echo '<input type="hidden" name="trid" value="' . (int) $trid . '">';
+		echo '<input type="hidden" name="lang" value="' . esc_attr( $lang_code ) . '">';
+		echo '<button type="submit" class="button button-primary">'
+			. esc_html__( 'Translate with Engine', 'openpoly' ) . '</button>';
+		echo '</form> ';
 		echo '<a class="button" href="' . esc_url( $base_url . '&a=import-form' ) . '">'
 			. esc_html__( 'Import XLIFF', 'openpoly' ) . '</a> ';
 		echo '<a class="button" href="' . esc_url( admin_url( 'admin.php?page=' . self::PAGE_SLUG ) ) . '">'
@@ -533,6 +544,101 @@ final class AteEditor {
 				$trid
 			)
 		);
+	}
+
+	/**
+	 * Handle engine translation request.
+	 *
+	 * Sends all untranslated segments to the configured translation
+	 * engine, writes the results back, and redirects to the editor.
+	 *
+	 * @return void
+	 */
+	public function handle_engine(): void {
+		if ( ! isset( $_POST['openpoly_ate_engine_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( (string) $_POST['openpoly_ate_engine_nonce'] ) ), 'openpoly_ate_engine' ) ) {
+			wp_die( esc_html__( 'Security check failed.', 'openpoly' ) );
+		}
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_die( esc_html__( 'Insufficient permissions.', 'openpoly' ) );
+		}
+
+		$trid      = isset( $_POST['trid'] ) ? (int) $_POST['trid'] : 0;
+		$lang_code = isset( $_POST['lang'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['lang'] ) ) : '';
+
+		// Load segments.
+		$segments = $this->segments->load( $trid, $lang_code );
+		if ( array() === $segments ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array( 'engine_error' => 'no_segments' ),
+					admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lang_code ) )
+				)
+			);
+			exit;
+		}
+
+		// Collect untranslated segments.
+		$source_lang = $this->get_source_language( $trid );
+		$to_translate = array();
+		$texts        = array();
+		foreach ( $segments as $seg ) {
+			$status = (int) ( $seg['status'] ?? 0 );
+			if ( 0 === $status ) {
+				$sid          = (int) $seg['id'];
+				$source       = (string) ( $seg['source_text'] ?? '' );
+				$to_translate[] = array(
+					'id'   => $sid,
+					'text' => $source,
+				);
+				$texts[ $sid ] = $source;
+			}
+		}
+
+		if ( array() === $to_translate ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array( 'saved' => '1' ),
+					admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lang_code ) )
+				)
+			);
+			exit;
+		}
+
+		// Build engine and translate.
+		try {
+			$engine = \OpenPoly\Engine\OpenAiCompatibleEngine::from_options();
+			$ik_key = \OpenPoly\Engine\OpenAiCompatibleEngine::idempotency_key( $trid, $texts );
+			$result = $engine->translate(
+				$source_lang ?? 'en_US',
+				$lang_code,
+				$to_translate,
+				$ik_key
+			);
+
+			// Write translations back.
+			foreach ( $result->translations as $seg_id => $translated_text ) {
+				if ( '' !== $translated_text ) {
+					$this->segments->update_translation( $seg_id, $translated_text, 2, 0 );
+				}
+			}
+		} catch ( EngineException $e ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array( 'engine_error' => rawurlencode( $e->error_code ) ),
+					admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lang_code ) )
+				)
+			);
+			exit;
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				array( 'saved' => '1' ),
+				admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lang_code ) )
+			)
+		);
+		exit;
 	}
 
 	/**

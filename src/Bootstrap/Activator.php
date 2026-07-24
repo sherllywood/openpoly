@@ -15,6 +15,7 @@ namespace OpenPoly\Bootstrap;
 
 use OpenPoly\Admin\AdminServiceProvider;
 use OpenPoly\DB\Database;
+use OpenPoly\Engine\EngineServiceProvider;
 use OpenPoly\Language\LanguageServiceProvider;
 use OpenPoly\NavMenu\NavMenuServiceProvider;
 use OpenPoly\Query\QueryServiceProvider;
@@ -116,6 +117,7 @@ final class Activator {
 		return array(
 			LanguageServiceProvider::class,
 			TranslationServiceProvider::class,
+			EngineServiceProvider::class,
 			UrlServiceProvider::class,
 			ContextServiceProvider::class,
 			QueryServiceProvider::class,

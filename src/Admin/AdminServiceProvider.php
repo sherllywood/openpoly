@@ -2,8 +2,8 @@
 /**
  * Service provider for the Admin module.
  *
- * Wires LanguageMetaBox, CreateTranslation, and AteEditor into the DI
- * container and registers their hooks.
+ * Wires LanguageMetaBox, CreateTranslation, AteEditor, and EngineSettings
+ * into the DI container and registers their hooks.
  *
  * @package OpenPoly
  */
@@ -69,6 +69,13 @@ final class AdminServiceProvider extends ServiceProvider {
 				);
 			}
 		);
+
+		$this->container->set(
+			EngineSettings::class,
+			static function (): EngineSettings {
+				return new EngineSettings();
+			}
+		);
 	}
 
 	/**
@@ -82,5 +89,6 @@ final class AdminServiceProvider extends ServiceProvider {
 		$this->container->get( LanguageMetaBox::class )->register_hooks();
 		$this->container->get( CreateTranslation::class )->register_hooks();
 		$this->container->get( AteEditor::class )->register_hooks();
+		$this->container->get( EngineSettings::class )->register_hooks();
 	}
 }
