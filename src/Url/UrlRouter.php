@@ -190,6 +190,39 @@ final class UrlRouter {
 	}
 
 	/**
+	 * Set the current language explicitly and persist it as a
+	 * cookie so subsequent ajax / REST requests see the same value.
+	 *
+	 * Replaces the reflection hack used by ContextResolver; once
+	 * M-14 lands this is the only supported setter.
+	 *
+	 * @param string $code Language code to set, e.g. "en_US".
+	 * @return void
+	 */
+	public function set_current_language( string $code ): void {
+		$this->current_language = $code;
+		if ( ! headers_sent() ) {
+			// 30-day cookie. Path "/" so it covers admin-ajax + REST.
+			// The DAY_IN_SECONDS constant lives in WordPress; fall
+			// back to a literal for unit tests that load this file
+			// without the WP runtime.
+			$day = defined( 'DAY_IN_SECONDS' ) ? DAY_IN_SECONDS : 86400;
+			// phpcs:ignore WordPressVIPMinimum.Performance.TimeAfterCookieSet -- not a VIP site; cookie lifetime is the standard 30 days.
+			setcookie(
+				ContextResolver::COOKIE_NAME,
+				$code,
+				array(
+					'expires'  => time() + ( 30 * $day ),
+					'path'     => '/',
+					'secure'   => is_ssl(),
+					'httponly' => false, // must be readable by JS for the switcher
+					'samesite' => 'Lax',
+				)
+			);
+		}
+	}
+
+	/**
 	 * Look up the trid for an element. Reserved for M-10's query
 	 * layer; exposed here so the property is "used" and PHPStan
 	 * does not flag it as never read.

@@ -17,6 +17,7 @@ use OpenPoly\DB\Database;
 use OpenPoly\Language\LanguageServiceProvider;
 use OpenPoly\Query\QueryServiceProvider;
 use OpenPoly\Seo\HreflangServiceProvider;
+use OpenPoly\Switcher\SwitcherServiceProvider;
 use OpenPoly\Translation\TranslationServiceProvider;
 use OpenPoly\Url\ContextServiceProvider;
 use OpenPoly\Url\UrlServiceProvider;
@@ -114,6 +115,7 @@ final class Activator {
 			ContextServiceProvider::class,
 			QueryServiceProvider::class,
 			HreflangServiceProvider::class,
+			SwitcherServiceProvider::class,
 		);
 	}
 }
