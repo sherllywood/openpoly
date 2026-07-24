@@ -25,10 +25,10 @@ interface EngineGateway {
 	/**
 	 * Translate a batch of segments.
 	 *
-	 * @param string                                   $source_language Source language code, e.g. "en_US".
-	 * @param string                                   $target_language Target language code, e.g. "zh_CN".
-	 * @param array<int, array{id:int, text:string}>   $segments        Segments to translate.
-	 * @param string                                   $idempotency_key Idempotency key for safe retry.
+	 * @param string                                  $source_language Source language code, e.g. "en_US".
+	 * @param string                                  $target_language Target language code, e.g. "zh_CN".
+	 * @param array<int, array{id:int, text:string}>  $segments        Segments to translate.
+	 * @param string                                  $idempotency_key Idempotency key for safe retry.
 	 * @return EngineResult
 	 * @throws EngineException On gateway error.
 	 */
