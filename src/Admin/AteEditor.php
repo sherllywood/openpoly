@@ -55,6 +55,8 @@ final class AteEditor {
 	/**
 	 * Translation group repository.
 	 *
+	 * Used for trid source lookup in do_segment() and get_source_language().
+	 *
 	 * @var Repository
 	 */
 	private Repository $repository;
@@ -239,22 +241,19 @@ final class AteEditor {
 	 */
 	private function do_segment( int $trid, string $lang_code ): void {
 		// Find the source element for this trid.
-		global $wpdb;
-		$source = $wpdb->get_row(
-			$wpdb->prepare(
-				"SELECT element_type, element_id FROM {$wpdb->prefix}op_translations
-				 WHERE trid = %d AND source_language_code IS NULL",
-				$trid
-			),
-			ARRAY_A
-		);
-
-		if ( ! is_array( $source ) ) {
+		$source_lang = $this->get_source_language( $trid );
+		if ( null === $source_lang ) {
 			return;
 		}
 
-		$element_type = (string) $source['element_type'];
-		$element_id   = (int) $source['element_id'];
+		// Get source element from repository.
+		$element = $this->repository->get_element( $trid, $source_lang );
+		if ( null === $element ) {
+			return;
+		}
+
+		$element_type = $element['element_type'];
+		$element_id   = (int) $element['element_id'];
 
 		// Fetch post content.
 		$post = get_post( $element_id );
@@ -417,8 +416,8 @@ final class AteEditor {
 			wp_die( esc_html__( 'Insufficient permissions.', 'openpoly' ) );
 		}
 
-		$trid      = isset( $_POST['trid'] ) ? (int) $_POST['trid'] : 0;
-		$lang_code = isset( $_POST['lang'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['lang'] ) ) : '';
+		$trid     = isset( $_POST['trid'] ) ? (int) $_POST['trid'] : 0;
+		$lang     = isset( $_POST['lang'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['lang'] ) ) : '';
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized per-item below.
 		$segments = isset( $_POST['seg'] ) ? wp_unslash( $_POST['seg'] ) : array();
 		$is_draft = isset( $_POST['save_draft'] );
@@ -441,7 +440,7 @@ final class AteEditor {
 		wp_safe_redirect(
 			add_query_arg(
 				array( 'saved' => '1' ),
-				admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lang_code ) )
+				admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lang ) )
 			)
 		);
 		exit;
