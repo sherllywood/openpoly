@@ -17,6 +17,7 @@ use OpenPoly\DB\Database;
 use OpenPoly\Language\LanguageServiceProvider;
 use OpenPoly\Query\QueryServiceProvider;
 use OpenPoly\Translation\TranslationServiceProvider;
+use OpenPoly\Url\ContextServiceProvider;
 use OpenPoly\Url\UrlServiceProvider;
 
 defined( 'ABSPATH' ) || exit;
@@ -109,6 +110,7 @@ final class Activator {
 			LanguageServiceProvider::class,
 			TranslationServiceProvider::class,
 			UrlServiceProvider::class,
+			ContextServiceProvider::class,
 			QueryServiceProvider::class,
 		);
 	}
