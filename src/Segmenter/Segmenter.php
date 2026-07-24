@@ -106,21 +106,49 @@ final class Segmenter {
 	public function split_sentences( string $text ): array {
 		// Protect abbreviations from being split.
 		$abbreviations = array(
-			'Mr.', 'Mrs.', 'Ms.', 'Dr.', 'Prof.', 'Sr.', 'Jr.',
-			'St.', 'Ave.', 'Rd.', 'Blvd.',
-			'U.S.', 'U.K.', 'E.U.',
-			'i.e.', 'e.g.', 'etc.', 'vs.', 'viz.',
-			'Inc.', 'Ltd.', 'Co.', 'Corp.',
-			'Jan.', 'Feb.', 'Mar.', 'Apr.', 'Jun.', 'Jul.',
-			'Aug.', 'Sep.', 'Sept.', 'Oct.', 'Nov.', 'Dec.',
+			'Mr.',
+			'Mrs.',
+			'Ms.',
+			'Dr.',
+			'Prof.',
+			'Sr.',
+			'Jr.',
+			'St.',
+			'Ave.',
+			'Rd.',
+			'Blvd.',
+			'U.S.',
+			'U.K.',
+			'E.U.',
+			'i.e.',
+			'e.g.',
+			'etc.',
+			'vs.',
+			'viz.',
+			'Inc.',
+			'Ltd.',
+			'Co.',
+			'Corp.',
+			'Jan.',
+			'Feb.',
+			'Mar.',
+			'Apr.',
+			'Jun.',
+			'Jul.',
+			'Aug.',
+			'Sep.',
+			'Sept.',
+			'Oct.',
+			'Nov.',
+			'Dec.',
 		);
 
 		$placeholders = array();
 		foreach ( $abbreviations as $i => $abbr ) {
-			$placeholder       = "{{ABBR{$i}}}";
-			$placeholders[]    = $placeholder;
-			$escaped           = preg_quote( $abbr, '/' );
-			$text              = preg_replace( '/' . $escaped . '/u', $placeholder, $text );
+			$placeholder    = "{{ABBR{$i}}}";
+			$placeholders[] = $placeholder;
+			$escaped        = preg_quote( $abbr, '/' );
+			$text           = preg_replace( '/' . $escaped . '/u', $placeholder, $text );
 		}
 
 		// Split on sentence-ending punctuation followed by space + capital, or end of string.

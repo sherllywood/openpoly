@@ -40,13 +40,15 @@ final class XliffImport {
 
 		$doc = new DOMDocument();
 		// Disable external entity loading for security (XXE prevention).
-		$old_internal = libxml_disable_entity_loader( true );
+		// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.Deprecated -- libxml_disable_entity_loader is the most portable XXE guard; libxml_set_external_entity_loader is available only in PHP 8.4+.
+		$old_internal     = libxml_disable_entity_loader( true );
 		$old_use_internal = libxml_use_internal_errors( true );
 
 		$loaded = $doc->loadXML( $xml );
 		libxml_clear_errors();
 		libxml_disable_entity_loader( $old_internal );
 		libxml_use_internal_errors( $old_use_internal );
+		// phpcs:enable
 
 		if ( ! $loaded ) {
 			return array();
@@ -56,8 +58,8 @@ final class XliffImport {
 		$units   = $doc->getElementsByTagName( 'unit' );
 
 		foreach ( $units as $unit ) {
-			$unit_id   = $unit->getAttribute( 'id' );
-			$segments  = $unit->getElementsByTagName( 'segment' );
+			$unit_id  = $unit->getAttribute( 'id' );
+			$segments = $unit->getElementsByTagName( 'segment' );
 
 			if ( 0 === $segments->length ) {
 				continue;
@@ -89,8 +91,8 @@ final class XliffImport {
 	/**
 	 * Apply parsed unit translations to op_segments via the repository.
 	 *
-	 * @param SegmentRepository                                        $repository Data-access object.
-	 * @param array<int, array{unit_id:string, source:string, target:string}> $units Parsed units from parse().
+	 * @param SegmentRepository                                                 $repository Data-access object.
+	 * @param array<int, array{unit_id:string, source:string, target:string}>   $units      Parsed units from parse().
 	 * @return int Number of segments updated.
 	 */
 	public function apply( SegmentRepository $repository, array $units ): int {

@@ -76,11 +76,11 @@ final class AteEditor {
 	/**
 	 * Constructor.
 	 *
-	 * @param Segmenter        $segmenter    Segmenter engine.
-	 * @param SegmentRepository $segments    Segment data-access object.
-	 * @param Repository        $repository   Translation group repository.
-	 * @param XliffExport       $xliff_export XLIFF export handler.
-	 * @param XliffImport       $xliff_import XLIFF import handler.
+	 * @param Segmenter         $segmenter     Segmenter engine.
+	 * @param SegmentRepository  $segments      Segment data-access object.
+	 * @param Repository         $repository    Translation group repository.
+	 * @param XliffExport        $xliff_export  XLIFF export handler.
+	 * @param XliffImport        $xliff_import  XLIFF import handler.
 	 */
 	public function __construct(
 		Segmenter $segmenter,
@@ -92,8 +92,8 @@ final class AteEditor {
 		$this->segmenter    = $segmenter;
 		$this->segments     = $segments;
 		$this->repository   = $repository;
-		$this->xliff_export  = $xliff_export;
-		$this->xliff_import  = $xliff_import;
+		$this->xliff_export = $xliff_export;
+		$this->xliff_import = $xliff_import;
 	}
 
 	/**
@@ -131,10 +131,12 @@ final class AteEditor {
 	 * @return void
 	 */
 	public function render(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only admin page, no side effects.
 		$trid      = isset( $_GET['trid'] ) ? (int) $_GET['trid'] : 0;
 		$lang_code = isset( $_GET['lang'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['lang'] ) ) : '';
 		$action    = isset( $_GET['a'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['a'] ) ) : '';
 		$saved     = isset( $_GET['saved'] );
+		// phpcs:enable
 
 		echo '<div class="wrap">';
 		echo '<h1>' . esc_html__( 'Translation Editor', 'openpoly' ) . '</h1>';
@@ -213,8 +215,8 @@ final class AteEditor {
 			$links = array();
 			if ( is_array( $langs ) ) {
 				foreach ( $langs as $lc ) {
-					$url      = admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . urlencode( $lc ) . '&a=segment' );
-					$links[] = '<a href="' . esc_url( $url ) . '">' . esc_html( $lc ) . '</a>';
+					$url      = admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lc ) . '&a=segment' );
+					$links[]  = '<a href="' . esc_url( $url ) . '">' . esc_html( $lc ) . '</a>';
 				}
 			}
 
@@ -266,8 +268,8 @@ final class AteEditor {
 			return;
 		}
 
-		$content  = $post->post_content;
-		$segs     = $this->segmenter->segment( $content );
+		$content = $post->post_content;
+		$segs    = $this->segmenter->segment( $content );
 
 		$to_save = array();
 		foreach ( $segs as $i => $seg ) {
@@ -317,7 +319,7 @@ final class AteEditor {
 		echo '</div>';
 
 		// Action buttons.
-		$base_url = admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . urlencode( $lang_code ) );
+		$base_url = admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lang_code ) );
 		echo '<p style="margin-bottom:16px;">';
 		echo '<a class="button button-primary" href="' . esc_url( $base_url . '&a=export' ) . '">'
 			. esc_html__( 'Export XLIFF', 'openpoly' ) . '</a> ';
@@ -328,6 +330,7 @@ final class AteEditor {
 		echo '</p>';
 
 		// Import form (shown when a=import-form).
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only state check.
 		if ( isset( $_GET['a'] ) && 'import-form' === $_GET['a'] ) {
 			$this->render_import_form( $trid, $lang_code );
 		}
@@ -389,11 +392,10 @@ final class AteEditor {
 	 * @return void
 	 */
 	private function render_import_form( int $trid, string $lang_code ): void {
+		unset( $trid, $lang_code );
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" enctype="multipart/form-data" style="margin-bottom:16px; padding:12px; background:#f9f9f9; border:1px solid #ccd0d4;">';
 		wp_nonce_field( 'openpoly_ate_import', 'openpoly_ate_import_nonce' );
 		echo '<input type="hidden" name="action" value="openpoly_ate_import">';
-		echo '<input type="hidden" name="trid" value="' . (int) $trid . '">';
-		echo '<input type="hidden" name="lang" value="' . esc_attr( $lang_code ) . '">';
 		echo '<h3>' . esc_html__( 'Import XLIFF File', 'openpoly' ) . '</h3>';
 		echo '<p>' . esc_html__( 'Select an XLIFF 2.0 (.xliff) file to import translations.', 'openpoly' ) . '</p>';
 		echo '<input type="file" name="xliff_file" accept=".xliff,.xml"> ';
@@ -417,7 +419,8 @@ final class AteEditor {
 
 		$trid      = isset( $_POST['trid'] ) ? (int) $_POST['trid'] : 0;
 		$lang_code = isset( $_POST['lang'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['lang'] ) ) : '';
-		$segments  = isset( $_POST['seg'] ) ? wp_unslash( $_POST['seg'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized per-item below.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized per-item below.
+		$segments  = isset( $_POST['seg'] ) ? wp_unslash( $_POST['seg'] ) : array();
 		$is_draft  = isset( $_POST['save_draft'] );
 
 		if ( ! is_array( $segments ) ) {
@@ -438,7 +441,7 @@ final class AteEditor {
 		wp_safe_redirect(
 			add_query_arg(
 				array( 'saved' => '1' ),
-				admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . urlencode( $lang_code ) )
+				admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lang_code ) )
 			)
 		);
 		exit;
@@ -454,8 +457,10 @@ final class AteEditor {
 			wp_die( esc_html__( 'Insufficient permissions.', 'openpoly' ) );
 		}
 
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- export is idempotent GET, no side effects.
 		$trid      = isset( $_GET['trid'] ) ? (int) $_GET['trid'] : 0;
 		$lang_code = isset( $_GET['lang'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['lang'] ) ) : '';
+		// phpcs:enable
 
 		// Determine source language from the trid.
 		$source_lang = $this->get_source_language( $trid );
@@ -497,6 +502,7 @@ final class AteEditor {
 			wp_die( esc_html__( 'File upload failed.', 'openpoly' ) );
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading uploaded temp file, not a remote URL.
 		$content = file_get_contents( $_FILES['xliff_file']['tmp_name'] );
 		if ( false === $content ) {
 			wp_die( esc_html__( 'Could not read uploaded file.', 'openpoly' ) );
@@ -507,8 +513,11 @@ final class AteEditor {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'saved' => '1', 'imported' => (string) $count ),
-				admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . urlencode( $lang_code ) )
+				array(
+					'saved'    => '1',
+					'imported' => (string) $count,
+				),
+				admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lang_code ) )
 			)
 		);
 		exit;

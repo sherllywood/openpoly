@@ -50,22 +50,22 @@ final class SegmentRepository {
 	}
 
 	/**
-	 * Save (upsert) segments for a specific (trid, element_type, element_id, language_code) batch.
+	 * Save (upsert) segments for a batch of segments.
 	 *
 	 * Existing segments not present in the incoming list are left
 	 * untouched (they may be translations for another language).
 	 *
-	 * @param int            $trid          Translation group id.
-	 * @param string         $element_type  Element type, e.g. "post_post".
-	 * @param int            $element_id    Element id.
-	 * @param string         $language_code Language code.
-	 * @param array<int, array{segment_index:int, source_text:string, md5:string}> $segments
+	 * @param int                                                      $trid          Translation group id.
+	 * @param string                                                   $element_type  Element type, e.g. "post_post".
+	 * @param int                                                      $element_id    Element id.
+	 * @param string                                                   $language_code Language code.
+	 * @param array<int, array{segment_index:int, source_text:string, md5:string}> $segments      Segments to upsert.
 	 * @return int Number of segments upserted.
 	 */
 	public function save( int $trid, string $element_type, int $element_id, string $language_code, array $segments ): int {
 		global $wpdb;
 
-		$now  = current_time( 'mysql', true );
+		$now   = current_time( 'mysql', true );
 		$count = 0;
 
 		foreach ( $segments as $seg ) {
@@ -83,7 +83,7 @@ final class SegmentRepository {
 				// Segment exists. Check if source has changed.
 				$old = $wpdb->get_row(
 					$wpdb->prepare(
-						"SELECT md5, source_text FROM {$wpdb->prefix}op_segments WHERE id = %d",
+						"SELECT md5, status FROM {$wpdb->prefix}op_segments WHERE id = %d",
 						$existing
 					),
 					ARRAY_A
@@ -96,6 +96,7 @@ final class SegmentRepository {
 					$needs_update = ( 0 !== $status ) ? 1 : 0;
 				}
 
+				// phpcs:disable WordPress.DB
 				$wpdb->update(
 					$wpdb->prefix . 'op_segments',
 					array(
@@ -108,26 +109,29 @@ final class SegmentRepository {
 					array( '%s', '%s', '%d', '%s' ),
 					array( '%d' )
 				);
+				// phpcs:enable
 			} else {
 				// Insert new segment.
+				// phpcs:disable WordPress.DB
 				$wpdb->insert(
 					$wpdb->prefix . 'op_segments',
 					array(
-						'trid'          => $trid,
-						'element_type'  => $element_type,
-						'element_id'    => $element_id,
-						'segment_index' => $seg['segment_index'],
-						'language_code' => $language_code,
-						'source_text'   => $seg['source_text'],
-						'translated_text' => '',
-						'status'        => 0,
-						'md5'           => $seg['md5'],
-						'needs_update'  => 0,
-						'created_at'    => $now,
-						'updated_at'    => $now,
+						'trid'             => $trid,
+						'element_type'     => $element_type,
+						'element_id'       => $element_id,
+						'segment_index'    => $seg['segment_index'],
+						'language_code'    => $language_code,
+						'source_text'      => $seg['source_text'],
+						'translated_text'  => '',
+						'status'           => 0,
+						'md5'              => $seg['md5'],
+						'needs_update'     => 0,
+						'created_at'       => $now,
+						'updated_at'       => $now,
 					),
 					array( '%d', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s' )
 				);
+				// phpcs:enable
 			}
 			++$count;
 		}
@@ -147,6 +151,7 @@ final class SegmentRepository {
 	public function update_translation( int $segment_id, string $translated_text, int $status, int $translator_id = 0 ): void {
 		global $wpdb;
 
+		// phpcs:disable WordPress.DB
 		$wpdb->update(
 			$wpdb->prefix . 'op_segments',
 			array(
@@ -160,6 +165,7 @@ final class SegmentRepository {
 			array( '%s', '%d', '%d', '%d', '%s' ),
 			array( '%d' )
 		);
+		// phpcs:enable
 	}
 
 	/**

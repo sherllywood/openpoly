@@ -27,10 +27,10 @@ final class XliffExport {
 	/**
 	 * Generate an XLIFF 2.0 XML string for a batch of segments.
 	 *
-	 * @param string $source_language Source language code, e.g. "en_US".
-	 * @param string $target_language Target language code, e.g. "zh_CN".
-	 * @param array<int, array<string, mixed>> $segments Rows from op_segments.  Each row must have id, source_text, translated_text, segment_index.
-	 * @param array{post_title?:string, post_id?:int} $meta Optional metadata.
+	 * @param string                                  $source_language Source language code, e.g. "en_US".
+	 * @param string                                  $target_language Target language code, e.g. "zh_CN".
+	 * @param array<int, array<string, mixed>>        $segments        Rows from op_segments.  Each row must have id, source_text, translated_text, segment_index.
+	 * @param array{post_title?:string, post_id?:int} $meta            Optional metadata.
 	 * @return string XLIFF 2.0 XML as string, or empty string on failure.
 	 */
 	public function export( string $source_language, string $target_language, array $segments, array $meta = array() ): string {
@@ -38,6 +38,7 @@ final class XliffExport {
 			return '';
 		}
 
+		// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- DOMDocument properties.
 		$doc                     = new DOMDocument( '1.0', 'UTF-8' );
 		$doc->formatOutput       = true;
 		$doc->preserveWhiteSpace = false;
@@ -71,12 +72,12 @@ final class XliffExport {
 
 			$segment_elem = $doc->createElement( 'segment' );
 
-			$source = $doc->createElement( 'source' );
+			$source              = $doc->createElement( 'source' );
 			$source->textContent = (string) ( $segment['source_text'] ?? '' );
 			$segment_elem->appendChild( $source );
 
-			$target = $doc->createElement( 'target' );
-			$translated = (string) ( $segment['translated_text'] ?? '' );
+			$target        = $doc->createElement( 'target' );
+			$translated    = (string) ( $segment['translated_text'] ?? '' );
 			if ( '' !== $translated ) {
 				$target->textContent = $translated;
 			}
@@ -85,6 +86,7 @@ final class XliffExport {
 			$unit->appendChild( $segment_elem );
 			$file->appendChild( $unit );
 		}
+		// phpcs:enable
 
 		$xml = $doc->saveXML();
 		return false !== $xml ? $xml : '';
