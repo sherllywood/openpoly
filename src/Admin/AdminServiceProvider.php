@@ -2,8 +2,8 @@
 /**
  * Service provider for the Admin module.
  *
- * Wires LanguageMetaBox and CreateTranslation into the DI container
- * and registers their hooks.
+ * Wires LanguageMetaBox, CreateTranslation, and AteEditor into the DI
+ * container and registers their hooks.
  *
  * @package OpenPoly
  */
@@ -16,6 +16,10 @@ use OpenPoly\Bootstrap\Container;
 use OpenPoly\Bootstrap\HookRegistrar;
 use OpenPoly\Bootstrap\ServiceProvider;
 use OpenPoly\Language\LanguageManager;
+use OpenPoly\Segmenter\Segmenter;
+use OpenPoly\Segmenter\SegmentRepository;
+use OpenPoly\Segmenter\XliffExport;
+use OpenPoly\Segmenter\XliffImport;
 use OpenPoly\Translation\Repository;
 
 defined( 'ABSPATH' ) || exit;
@@ -52,6 +56,19 @@ final class AdminServiceProvider extends ServiceProvider {
 				);
 			}
 		);
+
+		$this->container->set(
+			AteEditor::class,
+			static function ( Container $c ): AteEditor {
+				return new AteEditor(
+					$c->get( Segmenter::class ),
+					$c->get( SegmentRepository::class ),
+					$c->get( Repository::class ),
+					$c->get( XliffExport::class ),
+					$c->get( XliffImport::class )
+				);
+			}
+		);
 	}
 
 	/**
@@ -64,5 +81,6 @@ final class AdminServiceProvider extends ServiceProvider {
 		unset( $registrar );
 		$this->container->get( LanguageMetaBox::class )->register_hooks();
 		$this->container->get( CreateTranslation::class )->register_hooks();
+		$this->container->get( AteEditor::class )->register_hooks();
 	}
 }

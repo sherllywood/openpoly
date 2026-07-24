@@ -30,8 +30,9 @@ final class Schema {
 	 *
 	 * History:
 	 *   1 = initial (M-03): op_languages, op_translations, op_translation_status.
+	 *   2 = A-02 (v1.0): op_segments for segment-level translation storage.
 	 */
-	public const VERSION = 1;
+	public const VERSION = 2;
 
 	/**
 	 * Return the CREATE TABLE statements keyed by table name (no prefix).
@@ -46,6 +47,7 @@ final class Schema {
 			'op_languages'          => self::sql_languages(),
 			'op_translations'       => self::sql_translations(),
 			'op_translation_status' => self::sql_translation_status(),
+			'op_segments'           => self::sql_segments(),
 		);
 	}
 
@@ -135,6 +137,41 @@ CREATE TABLE {prefix}op_translation_status (
   KEY status (status),
   KEY translator_id (translator_id),
   KEY job_id (job_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+SQL;
+	}
+
+	/**
+	 * Return the dbDelta-compatible CREATE TABLE for op_segments.
+	 *
+	 * Stores individual translatable segments (sentences) for ATE
+	 * editor and XLIFF round-trip. Each segment belongs to a specific
+	 * (trid, language_code) pair within a translation group.
+	 *
+	 * @return string
+	 */
+	private static function sql_segments(): string {
+		return <<<'SQL'
+CREATE TABLE {prefix}op_segments (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  trid bigint(20) unsigned NOT NULL,
+  element_type varchar(60) NOT NULL COMMENT 'e.g. post_post, tax_category.',
+  element_id bigint(20) unsigned NOT NULL,
+  segment_index int(11) NOT NULL DEFAULT 0 COMMENT 'Zero-based segment position within the content.',
+  language_code varchar(20) NOT NULL,
+  source_text text NOT NULL COMMENT 'Original text of this segment.',
+  translated_text text NOT NULL DEFAULT '' COMMENT 'Translated text; empty = untranslated.',
+  status tinyint(4) NOT NULL DEFAULT 0 COMMENT '0 untranslated, 1 draft, 2 translated, 10 approved.',
+  translator_id bigint(20) unsigned NOT NULL DEFAULT 0,
+  md5 char(32) NOT NULL DEFAULT '' COMMENT 'MD5 of source_text; used to detect source changes.',
+  needs_update tinyint(1) NOT NULL DEFAULT 0,
+  created_at datetime NOT NULL,
+  updated_at datetime NOT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY trid_lang_segment (trid, language_code, segment_index),
+  KEY trid_lang (trid, language_code),
+  KEY element_type_id (element_type, element_id),
+  KEY status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 SQL;
 	}
