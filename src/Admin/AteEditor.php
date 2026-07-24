@@ -410,11 +410,11 @@ final class AteEditor {
 			wp_die( esc_html__( 'Insufficient permissions.', 'openpoly' ) );
 		}
 
-		$trid     = isset( $_POST['trid'] ) ? (int) $_POST['trid'] : 0;
-		$lang     = isset( $_POST['lang'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['lang'] ) ) : '';
+		$trid      = isset( $_POST['trid'] ) ? (int) $_POST['trid'] : 0;
+		$lang      = isset( $_POST['lang'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['lang'] ) ) : '';
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized per-item below.
-		$segments = isset( $_POST['seg'] ) ? wp_unslash( $_POST['seg'] ) : array();
-		$is_draft = isset( $_POST['save_draft'] );
+		$segments  = isset( $_POST['seg'] ) ? wp_unslash( $_POST['seg'] ) : array();
+		$is_draft  = isset( $_POST['save_draft'] );
 
 		if ( ! is_array( $segments ) ) {
 			$segments = array();
