@@ -142,8 +142,8 @@ final class Switcher {
 	/**
 	 * Render as a <ul>.
 	 *
-	 * @param array<int, array<string, mixed>> $items
-	 * @param bool                             $show_flags
+	 * @param array<int, array<string, mixed>> $items      Language items to render.
+	 * @param bool                             $show_flags Whether to prepend flag emoji.
 	 * @return string
 	 */
 	private function render_list( array $items, bool $show_flags ): string {
@@ -158,8 +158,8 @@ final class Switcher {
 	/**
 	 * Render as a comma-separated inline list.
 	 *
-	 * @param array<int, array<string, mixed>> $items
-	 * @param bool                             $show_flags
+	 * @param array<int, array<string, mixed>> $items      Language items to render.
+	 * @param bool                             $show_flags Whether to prepend flag emoji.
 	 * @return string
 	 */
 	private function render_inline( array $items, bool $show_flags ): string {
@@ -179,8 +179,8 @@ final class Switcher {
 	/**
 	 * Render as a <select> with JS onchange redirect.
 	 *
-	 * @param array<int, array<string, mixed>> $items
-	 * @param bool                             $show_flags
+	 * @param array<int, array<string, mixed>> $items      Language items to render.
+	 * @param bool                             $show_flags Whether to prepend flag emoji.
 	 * @return string
 	 */
 	private function render_dropdown( array $items, bool $show_flags ): string {
@@ -202,9 +202,9 @@ final class Switcher {
 	/**
 	 * Render a single language link.
 	 *
-	 * @param array<string, mixed> $item
-	 * @param bool                 $show_flags
-	 * @param string               $tag
+	 * @param array<string, mixed> $item       One language entry.
+	 * @param bool                 $show_flags Whether to prepend flag emoji.
+	 * @param string               $tag        HTML tag to wrap the link in.
 	 * @return string
 	 */
 	private function render_link( array $item, bool $show_flags, string $tag ): string {
@@ -228,9 +228,9 @@ final class Switcher {
 	 * @param string      $code        Target language code.
 	 * @param string      $request_url Current request URL.
 	 * @param string|null $current     Current request language, or null.
-	 * @return string
+	 * @return string Filtered URL for the language variant.
 	 */
-	private function url_for( string $code, string $request_url, ?string $current ): string {
+	private function url_for( string $code, string $request_url, ?string $current ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter -- $current reserved for future canonical-url comparisons.
 		// Save current router language, swap, ask the URL filter, restore.
 		$previous = $this->router->current_language();
 		$this->router->set_current_language( $code );

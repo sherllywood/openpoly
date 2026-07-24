@@ -15,6 +15,7 @@ namespace OpenPoly\Bootstrap;
 
 use OpenPoly\DB\Database;
 use OpenPoly\Language\LanguageServiceProvider;
+use OpenPoly\NavMenu\NavMenuServiceProvider;
 use OpenPoly\Query\QueryServiceProvider;
 use OpenPoly\Seo\HreflangServiceProvider;
 use OpenPoly\Switcher\SwitcherServiceProvider;
@@ -116,6 +117,7 @@ final class Activator {
 			QueryServiceProvider::class,
 			HreflangServiceProvider::class,
 			SwitcherServiceProvider::class,
+			NavMenuServiceProvider::class,
 		);
 	}
 }

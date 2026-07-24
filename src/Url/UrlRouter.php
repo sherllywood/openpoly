@@ -215,7 +215,7 @@ final class UrlRouter {
 					'expires'  => time() + ( 30 * $day ),
 					'path'     => '/',
 					'secure'   => is_ssl(),
-					'httponly' => false, // must be readable by JS for the switcher
+					'httponly' => false, // must be readable by JS for the switcher.
 					'samesite' => 'Lax',
 				)
 			);
