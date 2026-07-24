@@ -55,10 +55,10 @@ final class SegmentRepository {
 	 * Existing segments not present in the incoming list are left
 	 * untouched (they may be translations for another language).
 	 *
-	 * @param int                                                      $trid          Translation group id.
-	 * @param string                                                   $element_type  Element type, e.g. "post_post".
-	 * @param int                                                      $element_id    Element id.
-	 * @param string                                                   $language_code Language code.
+	 * @param int                                                                  $trid          Translation group id.
+	 * @param string                                                               $element_type  Element type, e.g. "post_post".
+	 * @param int                                                                  $element_id    Element id.
+	 * @param string                                                               $language_code Language code.
 	 * @param array<int, array{segment_index:int, source_text:string, md5:string}> $segments      Segments to upsert.
 	 * @return int Number of segments upserted.
 	 */
@@ -116,18 +116,18 @@ final class SegmentRepository {
 				$wpdb->insert(
 					$wpdb->prefix . 'op_segments',
 					array(
-						'trid'             => $trid,
-						'element_type'     => $element_type,
-						'element_id'       => $element_id,
-						'segment_index'    => $seg['segment_index'],
-						'language_code'    => $language_code,
-						'source_text'      => $seg['source_text'],
-						'translated_text'  => '',
-						'status'           => 0,
-						'md5'              => $seg['md5'],
-						'needs_update'     => 0,
-						'created_at'       => $now,
-						'updated_at'       => $now,
+						'trid'            => $trid,
+						'element_type'    => $element_type,
+						'element_id'      => $element_id,
+						'segment_index'   => $seg['segment_index'],
+						'language_code'   => $language_code,
+						'source_text'     => $seg['source_text'],
+						'translated_text' => '',
+						'status'          => 0,
+						'md5'             => $seg['md5'],
+						'needs_update'    => 0,
+						'created_at'      => $now,
+						'updated_at'      => $now,
 					),
 					array( '%d', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s' )
 				);
@@ -198,7 +198,7 @@ final class SegmentRepository {
 
 		if ( is_array( $rows ) ) {
 			foreach ( $rows as $row ) {
-				$cnt = (int) $row['cnt'];
+				$cnt              = (int) $row['cnt'];
 				$counts['total'] += $cnt;
 
 				switch ( (int) $row['status'] ) {

@@ -76,8 +76,8 @@ final class XliffExport {
 			$source->textContent = (string) ( $segment['source_text'] ?? '' );
 			$segment_elem->appendChild( $source );
 
-			$target        = $doc->createElement( 'target' );
-			$translated    = (string) ( $segment['translated_text'] ?? '' );
+			$target     = $doc->createElement( 'target' );
+			$translated = (string) ( $segment['translated_text'] ?? '' );
 			if ( '' !== $translated ) {
 				$target->textContent = $translated;
 			}

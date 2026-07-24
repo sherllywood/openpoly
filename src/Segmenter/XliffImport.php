@@ -88,8 +88,8 @@ final class XliffImport {
 	/**
 	 * Apply parsed unit translations to op_segments via the repository.
 	 *
-	 * @param SegmentRepository                                                 $repository Data-access object.
-	 * @param array<int, array{unit_id:string, source:string, target:string}>   $units      Parsed units from parse().
+	 * @param SegmentRepository                                               $repository Data-access object.
+	 * @param array<int, array{unit_id:string, source:string, target:string}> $units      Parsed units from parse().
 	 * @return int Number of segments updated.
 	 */
 	public function apply( SegmentRepository $repository, array $units ): int {

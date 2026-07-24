@@ -77,10 +77,10 @@ final class AteEditor {
 	 * Constructor.
 	 *
 	 * @param Segmenter         $segmenter     Segmenter engine.
-	 * @param SegmentRepository  $segments      Segment data-access object.
-	 * @param Repository         $repository    Translation group repository.
-	 * @param XliffExport        $xliff_export  XLIFF export handler.
-	 * @param XliffImport        $xliff_import  XLIFF import handler.
+	 * @param SegmentRepository $segments      Segment data-access object.
+	 * @param Repository        $repository    Translation group repository.
+	 * @param XliffExport       $xliff_export  XLIFF export handler.
+	 * @param XliffImport       $xliff_import  XLIFF import handler.
 	 */
 	public function __construct(
 		Segmenter $segmenter,
@@ -215,8 +215,8 @@ final class AteEditor {
 			$links = array();
 			if ( is_array( $langs ) ) {
 				foreach ( $langs as $lc ) {
-					$url      = admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lc ) . '&a=segment' );
-					$links[]  = '<a href="' . esc_url( $url ) . '">' . esc_html( $lc ) . '</a>';
+					$url     = admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&trid=' . $trid . '&lang=' . rawurlencode( $lc ) . '&a=segment' );
+					$links[] = '<a href="' . esc_url( $url ) . '">' . esc_html( $lc ) . '</a>';
 				}
 			}
 
@@ -420,8 +420,8 @@ final class AteEditor {
 		$trid      = isset( $_POST['trid'] ) ? (int) $_POST['trid'] : 0;
 		$lang_code = isset( $_POST['lang'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['lang'] ) ) : '';
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized per-item below.
-		$segments  = isset( $_POST['seg'] ) ? wp_unslash( $_POST['seg'] ) : array();
-		$is_draft  = isset( $_POST['save_draft'] );
+		$segments = isset( $_POST['seg'] ) ? wp_unslash( $_POST['seg'] ) : array();
+		$is_draft = isset( $_POST['save_draft'] );
 
 		if ( ! is_array( $segments ) ) {
 			$segments = array();
