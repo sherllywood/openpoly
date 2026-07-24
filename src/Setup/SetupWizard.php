@@ -96,7 +96,7 @@ final class SetupWizard {
 			return;
 		}
 		if ( '' !== (string) get_option( self::SETTINGS_OPTION, '' ) ) {
-			return; // already configured
+			return; // Already configured.
 		}
 		if ( '1' === (string) get_option( self::SKIPPED_OPTION, '0' ) ) {
 			return;

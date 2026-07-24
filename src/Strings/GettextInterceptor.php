@@ -43,6 +43,8 @@ final class GettextInterceptor {
 	/**
 	 * Language manager for current locale.
 	 *
+	 * Used to validate that the current language is active.
+	 *
 	 * @var LanguageManager
 	 */
 	private LanguageManager $languages;
@@ -89,7 +91,7 @@ final class GettextInterceptor {
 	 */
 	public function prefetch(): void {
 		$lang = $this->router->current_language();
-		if ( null === $lang ) {
+		if ( null === $lang || ! $this->is_active_language( $lang ) ) {
 			return;
 		}
 
@@ -109,7 +111,7 @@ final class GettextInterceptor {
 	 */
 	public function translate( $translation, $text, $domain ): string {
 		$lang = $this->router->current_language();
-		if ( null === $lang ) {
+		if ( null === $lang || ! $this->is_active_language( $lang ) ) {
 			return $translation;
 		}
 
@@ -140,7 +142,7 @@ final class GettextInterceptor {
 	 */
 	public function translate_with_context( $translation, $text, $context, $domain ): string {
 		$lang = $this->router->current_language();
-		if ( null === $lang ) {
+		if ( null === $lang || ! $this->is_active_language( $lang ) ) {
 			return $translation;
 		}
 
@@ -158,5 +160,20 @@ final class GettextInterceptor {
 		}
 
 		return $translation;
+	}
+
+	/**
+	 * Check whether a language code is among the active languages.
+	 *
+	 * @param string $code Language code.
+	 * @return bool
+	 */
+	private function is_active_language( string $code ): bool {
+		foreach ( $this->languages->active_languages() as $row ) {
+			if ( $code === (string) ( $row['code'] ?? '' ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

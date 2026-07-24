@@ -103,10 +103,10 @@ final class StringRepository {
 
 		$rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$wpdb->prepare(
-				"SELECT s.domain_name_context_md5, t.value
-				 FROM {$wpdb->prefix}op_strings s
-				 INNER JOIN {$wpdb->prefix}op_string_translations t ON s.id = t.string_id
-				 WHERE s.domain = %s AND t.language = %s AND t.status = 10",
+				'SELECT s.domain_name_context_md5, t.value
+				 FROM ' . $wpdb->prefix . self::TABLE_STRINGS . ' s
+				 INNER JOIN ' . $wpdb->prefix . self::TABLE_TRANSLATIONS . ' t ON s.id = t.string_id
+				 WHERE s.domain = %s AND t.language = %s AND t.status = 10',
 				$domain,
 				$language
 			),
