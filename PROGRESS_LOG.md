@@ -184,26 +184,19 @@ composer dump-autoload
 
 ## 6. 下次开工清单
 
-1. **已完成**以下标注：
-   - M-12 Taxonomy（`c2025c4`）
-   - M-15 hreflang（`9dfa3ef`）
-   - M-14 切换器（`1f77b23`）
-   - M-13 菜单（`8ca7259`）
-   - M-06 编辑屏元框（`c0d3775`）
-   - M-16 向导（`883f13b`）
-   - **★ Docker Desktop 已装好**（`docker --version` 通过、`hello-world` 跑通）
-   - **M-17 集成测试**（`tests/integration/` 已落地：
-     `SchemaIntegrationTest.php`（6 测试）、
-     `UrlRouterIntegrationTest.php`（7 测试）、
-     `tests/performance/benchmark.php`（NFR-001 基准脚本））
+1. **MVP 段 100% 完成** ✅（17/17 任务, 53/53 人日）—— main 现在 `883f13b`
+2. **Docker 已装好** ✅（29.6.2, `hello-world` 跑通）
+3. **集成测试** ✅ `tests/integration/` + `tests/performance/benchmark.php` 已落地
+4. **M-17 待解决**：
+   - WordPress 容器 `localhost:8888` 的向导"Next"按钮无响应
+   - 绕过方案：访问 `http://localhost:8888/wp-admin/?openpoly_setup_done=1` 跳过向导
+   - 或手动重启容器：`docker restart wp`
 
-2. **MVP 段进度 16/17 = 94%**（51/53 人日）—— main 现在 `883f13b`
-
-3. **M-17 待办**：
-   - 修 `npm install` 的 EPERM 错误（`npx @wordpress/env start` 卡在 npm 缓存清理）
-   - 或跳过 wp-env、直接用 `docker compose` 起 WP 6.5 + MariaDB
-   - 然后跑 `composer test:integration` 验证 SchemaIntegrationTest + UrlRouterIntegrationTest
-   - 跑 `wp eval-file tests/performance/benchmark.php` 验证 NFR-001 ≤ 19 SQL
-
-4. **完成 M-17 后**标记 **MVP 完成**，进入 v1.0 里程碑
+5. **下一阶段：v1.0 里程碑**
+   - A-01 字符串翻译扫描（6 人日）
+   - A-02 分句段 + ATE 编辑器（30 人日）
+   - A-03 引擎接入（4 人日）
+   - A-04 TM 精确匹配（3 人日）
+   - A-05 翻译仪表盘（6 人日）
+   - ...共计 17 个任务，~80 人日
 

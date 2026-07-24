@@ -61,4 +61,10 @@ final class RewriteGeneratorTest extends TestCase {
 		$existing = array( 'foo' => 'bar' );
 		self::assertSame( $existing, RewriteGenerator::merge( $existing, array() ) );
 	}
+
+	public function testMergeWithNullExistingReturnsOnlyLanguageRules(): void {
+		$merged = RewriteGenerator::merge( null, array( 'en_US' ) );
+		self::assertCount( 2, $merged, 'Null existing rules should produce only language rules.' );
+		self::assertArrayHasKey( '^en-us/?$', $merged );
+	}
 }

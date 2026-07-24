@@ -62,12 +62,13 @@ final class RewriteGenerator {
 	/**
 	 * Augment WP's existing rules with language-prefixed rules.
 	 *
-	 * @param array<string, string> $existing Existing rewrite rules.
-	 * @param array<int, string>    $language_codes Active language codes.
+	 * @param array<string, string>|null $existing Existing rewrite rules, or null when WP has not yet initialized them.
+	 * @param array<int, string>         $language_codes Active language codes.
 	 * @return array<string, string>
 	 */
-	public static function merge( array $existing, array $language_codes ): array {
+	public static function merge( ?array $existing, array $language_codes ): array {
 		$lang_rules = self::build_rules( $language_codes );
+		$existing   = $existing ?? array();
 		// Language rules go FIRST so they take precedence over the
 		// catch-all WordPress rules that follow.
 		return array_merge( $lang_rules, $existing );
