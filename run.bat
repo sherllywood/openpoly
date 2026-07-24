@@ -82,7 +82,14 @@ if errorlevel 1 goto END_FAIL
 
 echo.
 
-REM ---------- 3. wp-env ----------
+REM ---------- 3. optional integration ----------
+echo [2b/5] integration tests (if env supports it)
+echo --------------------------------------------------------
+call composer test:integration
+REM Separate step so failure does not block the core pipeline.
+if errorlevel 1 (
+    echo   [WARN] integration tests failed or skipped (expected when no Docker)
+)
 echo [3/5] wp-env start
 echo --------------------------------------------------------
 if "!HAS_NODE!"=="0" goto WPENV_SKIP_NODE

@@ -184,12 +184,26 @@ composer dump-autoload
 
 ## 6. 下次开工清单
 
-1. **已完成** M-12 Taxonomy（`c2025c4`）+ M-15 hreflang（`9dfa3ef`）+ M-14 切换器（`1f77b23`）+ M-13 菜单（`8ca7259`）
-2. **MVP 段进度 14/17 = 82%**（42/53 人日）—— main 现在 `8ca7259`
-3. **还剩 3 个任务**：
-   - **M-06 编辑屏元框**（6 人日）—— 后台"添加翻译"按钮，**演示路径完整**——**建议先做**
-   - M-16 向导（3 人日）—— 首次启用引导
-   - M-17 集成测试（3 人日）—— 性能红线验证
-4. 装 Docker Desktop（解锁 wp-env 跑集成测试）
+1. **已完成**以下标注：
+   - M-12 Taxonomy（`c2025c4`）
+   - M-15 hreflang（`9dfa3ef`）
+   - M-14 切换器（`1f77b23`）
+   - M-13 菜单（`8ca7259`）
+   - M-06 编辑屏元框（`c0d3775`）
+   - M-16 向导（`883f13b`）
+   - **★ Docker Desktop 已装好**（`docker --version` 通过、`hello-world` 跑通）
+   - **M-17 集成测试**（`tests/integration/` 已落地：
+     `SchemaIntegrationTest.php`（6 测试）、
+     `UrlRouterIntegrationTest.php`（7 测试）、
+     `tests/performance/benchmark.php`（NFR-001 基准脚本））
 
-任一完成后，更新 `D:\ML-tradyfox\docs\02-技术架构设计.md` 对应章节 + 写新 PROGRESS_LOG 条目。
+2. **MVP 段进度 16/17 = 94%**（51/53 人日）—— main 现在 `883f13b`
+
+3. **M-17 待办**：
+   - 修 `npm install` 的 EPERM 错误（`npx @wordpress/env start` 卡在 npm 缓存清理）
+   - 或跳过 wp-env、直接用 `docker compose` 起 WP 6.5 + MariaDB
+   - 然后跑 `composer test:integration` 验证 SchemaIntegrationTest + UrlRouterIntegrationTest
+   - 跑 `wp eval-file tests/performance/benchmark.php` 验证 NFR-001 ≤ 19 SQL
+
+4. **完成 M-17 后**标记 **MVP 完成**，进入 v1.0 里程碑
+
