@@ -40,15 +40,12 @@ final class XliffImport {
 
 		$doc = new DOMDocument();
 		// Disable external entity loading for security (XXE prevention).
-		// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.Deprecated -- libxml_disable_entity_loader is the most portable XXE guard; libxml_set_external_entity_loader is available only in PHP 8.4+.
-		$old_internal     = libxml_disable_entity_loader( true );
+		// Using flags + silent parse instead of deprecated libxml_disable_entity_loader().
 		$old_use_internal = libxml_use_internal_errors( true );
 
-		$loaded = $doc->loadXML( $xml );
+		$loaded = $doc->loadXML( $xml, LIBXML_NONET | LIBXML_NOENT );
 		libxml_clear_errors();
-		libxml_disable_entity_loader( $old_internal );
 		libxml_use_internal_errors( $old_use_internal );
-		// phpcs:enable
 
 		if ( ! $loaded ) {
 			return array();
