@@ -1,6 +1,6 @@
 <?php
 /**
- * hreflang output.
+ * Hreflang output.
  *
  * Emits one <link rel="alternate" hreflang="..." href="..."> tag
  * per language variant of the current post, plus an x-default
@@ -214,7 +214,7 @@ final class Hreflang {
 	/**
 	 * Inject the trid resolver. Called by HreflangServiceProvider.
 	 *
-	 * @param callable(string, int): (int|null) $resolver
+	 * @param callable(string, int): (int|null) $resolver Trid resolver taking (element_type, element_id).
 	 * @return void
 	 */
 	public function set_trid_resolver( callable $resolver ): void {
@@ -224,7 +224,7 @@ final class Hreflang {
 	/**
 	 * Inject the group loader. Called by HreflangServiceProvider.
 	 *
-	 * @param callable(int): (TranslationGroup|null) $loader
+	 * @param callable(int): (TranslationGroup|null) $loader Group loader taking a trid.
 	 * @return void
 	 */
 	public function set_group_loader( callable $loader ): void {

@@ -2,7 +2,8 @@
 /**
  * Service provider for the Query module.
  *
- * Wires QueryFilter into the DI container and registers its hooks.
+ * Wires QueryFilter and TermFilter into the DI container and
+ * registers their hooks.
  *
  * @package OpenPoly
  */
@@ -27,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
 final class QueryServiceProvider extends ServiceProvider {
 
 	/**
-	 * Bind the query filter factory.
+	 * Bind factories.
 	 *
 	 * @return void
 	 */
@@ -41,17 +42,27 @@ final class QueryServiceProvider extends ServiceProvider {
 				);
 			}
 		);
+
+		$this->container->set(
+			TermFilter::class,
+			static function ( Container $c ): TermFilter {
+				return new TermFilter(
+					$c->get( UrlRouter::class ),
+					$c->get( LanguageManager::class )
+				);
+			}
+		);
 	}
 
 	/**
-	 * Register the WP hooks from QueryFilter.
+	 * Register the WP hooks from both filters.
 	 *
 	 * @param HookRegistrar $registrar Hook registrar (unused here; hooks go via add_action/add_filter directly).
 	 * @return void
 	 */
 	public function boot( HookRegistrar $registrar ): void {
 		unset( $registrar );
-		$filter = $this->container->get( QueryFilter::class );
-		$filter->register_hooks();
+		$this->container->get( QueryFilter::class )->register_hooks();
+		$this->container->get( TermFilter::class )->register_hooks();
 	}
 }
