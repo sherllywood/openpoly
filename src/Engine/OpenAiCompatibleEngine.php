@@ -70,10 +70,10 @@ final class OpenAiCompatibleEngine implements EngineGateway {
 	/**
 	 * Translate a batch of segments.
 	 *
-	 * @param string                                  $source_language Source language code, e.g. "en_US".
-	 * @param string                                  $target_language Target language code, e.g. "zh_CN".
-	 * @param array<int, array{id:int, text:string}>  $segments        Segments to translate.
-	 * @param string                                  $idempotency_key Idempotency key for safe retry.
+	 * @param string                                   $source_language Source language code.
+	 * @param string                                   $target_language Target language code.
+	 * @param array<int, array{id:int, text:string}>   $segments        Segments to translate.
+	 * @param string                                   $idempotency_key Idempotency key for safe retry.
 	 * @return EngineResult
 	 * @throws EngineException On gateway error.
 	 */
@@ -82,13 +82,13 @@ final class OpenAiCompatibleEngine implements EngineGateway {
 			return new EngineResult( array() );
 		}
 
-		$url      = $this->base_url . 'v1/translate';
-		$headers  = array(
-			'Authorization'    => 'Bearer ' . $this->api_key,
-			'Content-Type'     => 'application/json',
-			'X-Site-Url'       => home_url(),
-			'X-Request-Id'     => wp_generate_uuid4(),
-			'Idempotency-Key'  => $idempotency_key,
+		$url     = $this->base_url . 'v1/translate';
+		$headers = array(
+			'Authorization'   => 'Bearer ' . $this->api_key,
+			'Content-Type'    => 'application/json',
+			'X-Site-Url'      => home_url(),
+			'X-Request-Id'    => wp_generate_uuid4(),
+			'Idempotency-Key' => $idempotency_key,
 		);
 
 		$body = array(
@@ -105,7 +105,7 @@ final class OpenAiCompatibleEngine implements EngineGateway {
 					$segments
 				)
 			),
-			'options' => array(
+			'options'     => array(
 				'preserve_placeholders' => true,
 			),
 		);
@@ -161,8 +161,8 @@ final class OpenAiCompatibleEngine implements EngineGateway {
 	/**
 	 * Generate an idempotency key from token prefix + job item id + segment fingerprint.
 	 *
-	 * @param int   $trid      Translation group id.
-	 * @param array<int, string> $texts Source texts in order.
+	 * @param int                  $trid  Translation group id.
+	 * @param array<int, string>   $texts Source texts in order.
 	 * @return string
 	 */
 	public static function idempotency_key( int $trid, array $texts ): string {
@@ -189,15 +189,15 @@ final class OpenAiCompatibleEngine implements EngineGateway {
 	/**
 	 * Handle non-200 HTTP responses, throwing appropriate exceptions.
 	 *
-	 * @param int            $status   HTTP status code.
-	 * @param mixed          $data     Decoded JSON body, or null.
+	 * @param int                  $status   HTTP status code.
+	 * @param mixed                $data     Decoded JSON body, or null.
 	 * @param array<string, mixed> $response Raw response array.
 	 * @return never
-	 * @throws EngineException
+	 * @throws EngineException Always throws.
 	 */
 	private function handle_error( int $status, $data, array $response ): void {
-		$error_code  = is_array( $data ) && isset( $data['error'] ) ? (string) $data['error'] : '';
-		$message     = is_array( $data ) && isset( $data['message'] ) ? (string) $data['message'] : '';
+		$error_code = is_array( $data ) && isset( $data['error'] ) ? (string) $data['error'] : '';
+		$message    = is_array( $data ) && isset( $data['message'] ) ? (string) $data['message'] : '';
 
 		$retry_after = 0;
 		if ( 429 === $status ) {
