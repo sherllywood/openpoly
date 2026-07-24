@@ -241,13 +241,7 @@ final class AteEditor {
 	 */
 	private function do_segment( int $trid, string $lang_code ): void {
 		// Find the source element for this trid.
-		$source_lang = $this->get_source_language( $trid );
-		if ( null === $source_lang ) {
-			return;
-		}
-
-		// Get source element from repository.
-		$element = $this->repository->get_element( $trid, $source_lang );
+		$element = $this->repository->get_source_element( $trid );
 		if ( null === $element ) {
 			return;
 		}

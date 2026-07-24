@@ -28,6 +28,36 @@ final class Repository {
 	private const TABLE = 'op_translations';
 
 	/**
+	 * Return the source element (element_type, element_id) for a trid.
+	 *
+	 * The source element is the row where source_language_code IS NULL.
+	 *
+	 * @param int $trid Translation group id.
+	 * @return array{element_type:string, element_id:int}|null
+	 */
+	public function get_source_element( int $trid ): ?array {
+		global $wpdb;
+
+		$row = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$wpdb->prepare(
+				"SELECT element_type, element_id FROM {$wpdb->prefix}op_translations
+				 WHERE trid = %d AND source_language_code IS NULL",
+				$trid
+			),
+			ARRAY_A
+		);
+
+		if ( ! is_array( $row ) ) {
+			return null;
+		}
+
+		return array(
+			'element_type' => (string) $row['element_type'],
+			'element_id'   => (int) $row['element_id'],
+		);
+	}
+
+	/**
 	 * Look up the trid for an existing element.
 	 *
 	 * @param string $element_type Element type, e.g. "post_post", "tax_category".
