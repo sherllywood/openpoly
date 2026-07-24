@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OpenPoly\Bootstrap;
 
+use OpenPoly\Admin\AdminServiceProvider;
 use OpenPoly\DB\Database;
 use OpenPoly\Language\LanguageServiceProvider;
 use OpenPoly\NavMenu\NavMenuServiceProvider;
@@ -118,6 +119,7 @@ final class Activator {
 			HreflangServiceProvider::class,
 			SwitcherServiceProvider::class,
 			NavMenuServiceProvider::class,
+			AdminServiceProvider::class,
 		);
 	}
 }
