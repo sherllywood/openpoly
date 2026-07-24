@@ -19,6 +19,7 @@ use OpenPoly\Language\LanguageServiceProvider;
 use OpenPoly\NavMenu\NavMenuServiceProvider;
 use OpenPoly\Query\QueryServiceProvider;
 use OpenPoly\Seo\HreflangServiceProvider;
+use OpenPoly\Setup\SetupServiceProvider;
 use OpenPoly\Switcher\SwitcherServiceProvider;
 use OpenPoly\Translation\TranslationServiceProvider;
 use OpenPoly\Url\ContextServiceProvider;
@@ -120,6 +121,7 @@ final class Activator {
 			SwitcherServiceProvider::class,
 			NavMenuServiceProvider::class,
 			AdminServiceProvider::class,
+			SetupServiceProvider::class,
 		);
 	}
 }

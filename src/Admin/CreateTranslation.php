@@ -175,7 +175,7 @@ final class CreateTranslation {
 		// Hard fail returned as 0 by wp_insert_post at runtime
 		// even though the PHPDoc promises int<1, max>. The redundant
 		// check is intentional defensive code.
-		// @phpstan-ignore-next-line
+		// @phpstan-ignore-next-line.
 		if ( 0 === $new_id ) {
 			return 0;
 		}
